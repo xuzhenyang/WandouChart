@@ -19,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import control.NetworkCommand;
+import exception.BusinessException;
+import exception.RemoteException;
 import model.TbUser;
 
 public class LoginDialog extends JDialog implements ActionListener
@@ -102,17 +105,18 @@ public class LoginDialog extends JDialog implements ActionListener
 			TbUser tbUser = new TbUser();
 			tbUser.setUserId(this.edtUserId.getText());
 			tbUser.setUserPwd(this.edtPwd.getText());
-			System.out.println("id :" + tbUser.getUserId());
-			System.out.println("pwd:" + tbUser.getUserPwd());
 
 			try
 			{
-				toServer.writeUTF(tbUser.getUserId());
-				toServer.writeUTF(tbUser.getUserPwd());
-				toServer.flush();
-				System.out.println("send done");
+				NetworkCommand.getServer().login(tbUser);
+				this.setVisible(false);
 			}
-			catch (IOException e1)
+			catch (RemoteException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (BusinessException e1)
 			{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

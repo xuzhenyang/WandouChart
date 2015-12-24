@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import control.NetworkCommand;
 import network.ServerListener;
 
 public class ServerView extends JFrame
@@ -126,6 +127,7 @@ public class ServerView extends JFrame
 		messageScrollPane.revalidate();
 
 		showStatus = new JTextField(35);
+		showStatus.setText(NetworkCommand.getServer().showState());
 		showStatus.setEditable(false);
 
 		sysMessage = new JTextField(24);

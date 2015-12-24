@@ -9,6 +9,7 @@ import java.net.Socket;
 
 import javax.swing.JTextArea;
 
+import control.ClientLoginHandler;
 import control.NetworkCommand;
 import control.UserManager;
 import model.NetworkPackage;
@@ -40,9 +41,15 @@ public class ServerHandleThread extends Thread
 						.readObject());
 				if (cmd.getCommandName().equals("login"))
 				{
+					(new ClientLoginHandler()).handleCommand(cmd);
+					textArea.append("login successful\n");
+				}
+				else if (cmd.getCommandName().equals("register"))
+				{
 					TbUser user = (TbUser) cmd.getParam();
-					//				UserManager um = new UserManager();
+					//					UserManager um = new UserManager();
 					//				um.userRegister(user);
+					textArea.append("register : \n");
 					textArea.append(user.toString());
 					textArea.append("\n");
 				}

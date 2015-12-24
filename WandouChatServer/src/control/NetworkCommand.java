@@ -5,11 +5,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import network.NetUtil;
 import exception.BusinessException;
 import exception.RemoteException;
 import model.NetworkPackage;
 import model.TbUser;
 
+/*
+ * NetworkCommand类
+ * 用于封装所有的网络请求命令
+ * */
 public class NetworkCommand
 {
 	private static NetworkCommand messageServer = null;
@@ -34,9 +39,23 @@ public class NetworkCommand
 		if (messageServer == null)
 		{
 			//			 这两个信息可写入相应的配置文件，然后从配置文件读取
-			messageServer = new NetworkCommand("127.0.0.1", 4331);
+/*			for(int i = 5000; i < 5200; i++)
+			{
+				if(!NetUtil.isLoclePortUsing(i))
+				{
+//					System.out.println("" + i + NetUtil.isLoclePortUsing(i));
+					messageServer = new NetworkCommand("127.0.0.1", i);
+					break;
+				}
+			}*/
+			messageServer = new NetworkCommand("127.0.0.1", 5000);
 		}
 		return messageServer;
+	}
+	
+	public String showState()
+	{
+		return "ip : " + serverip + " port : " + serverport;
 	}
 
 	private void connectToServer() throws RemoteException
@@ -131,6 +150,13 @@ public class NetworkCommand
 			BusinessException
 	{
 		this.currentUser = (TbUser) this.docmd("checkLogin", user);
+
+	}
+
+	public synchronized void checkRegister(TbUser user) throws RemoteException,
+			BusinessException
+	{
+		this.currentUser = (TbUser) this.docmd("checkRegister", user);
 
 	}
 

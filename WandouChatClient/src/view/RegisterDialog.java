@@ -90,7 +90,7 @@ public class RegisterDialog extends JDialog implements ActionListener
 
 			try
 			{
-				NetworkCommand.getServer().login(tbUser);
+				NetworkCommand.getServer().register(tbUser);
 			}
 			catch (RemoteException e1)
 			{
