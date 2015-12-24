@@ -1,4 +1,4 @@
-package control;
+package network;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,26 +9,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
-import view.ServerView;
 
 public class ClientListener
 {
 
-	ServerView serverView;
 	ClientListenThread listenThread;
 
-	public ClientListener(ServerView serverView)
+	public ClientListener()
 	{
 
-		this.serverView = serverView;
 
 		try
 		{
 			ServerSocket serverSocket = new ServerSocket(4331);
-			serverView.messageShow.append("Server started at " + new Date()
-					+ '\n');
-			listenThread = new ClientListenThread(serverSocket,
-					serverView.messageShow);
+			listenThread = new ClientListenThread(serverSocket);
 			listenThread.start();
 
 		}

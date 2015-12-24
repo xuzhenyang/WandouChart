@@ -21,6 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import control.NetworkCommand;
+import exception.BusinessException;
+import exception.RemoteException;
 import model.TbUser;
 
 public class RegisterDialog extends JDialog implements ActionListener
@@ -87,14 +90,14 @@ public class RegisterDialog extends JDialog implements ActionListener
 
 			try
 			{
-				System.out.println("start");
-				Socket socket = new Socket("127.0.0.1", 4331);
-				toServer = new ObjectOutputStream(socket.getOutputStream());
-				fromServer = new ObjectInputStream(socket.getInputStream());
-				toServer.writeObject(tbUser);
-				System.out.println("send done");
+				NetworkCommand.getServer().login(tbUser);
 			}
-			catch (IOException e1)
+			catch (RemoteException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (BusinessException e1)
 			{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

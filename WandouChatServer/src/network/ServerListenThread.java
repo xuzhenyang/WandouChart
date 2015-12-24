@@ -1,4 +1,4 @@
-package control;
+package network;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,7 +11,7 @@ import java.net.*;
 /*
  * 服务端的侦听类
  */
-public class ClientListenThread extends Thread
+public class ServerListenThread extends Thread
 {
 	ServerSocket server;
 
@@ -24,7 +24,7 @@ public class ClientListenThread extends Thread
 	/*
 	 * 聊天服务端的用户上线于下线侦听类
 	 */
-	public ClientListenThread(ServerSocket server, JTextArea textArea)
+	public ServerListenThread(ServerSocket server, JTextArea textArea)
 	{
 
 		this.server = server;
@@ -42,7 +42,7 @@ public class ClientListenThread extends Thread
 				textArea.append("waiting...\n");
 				Socket socket = server.accept();
 				textArea.append("connect\n");
-				(new ClientHandleThread(socket, textArea)).start();
+				(new ServerHandleThread(socket, textArea)).start();
 			}
 			catch (Exception e)
 			{

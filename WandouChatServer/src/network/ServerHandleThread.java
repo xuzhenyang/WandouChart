@@ -1,4 +1,4 @@
-package control;
+package network;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,6 +9,9 @@ import java.net.Socket;
 
 import javax.swing.JTextArea;
 
+import control.NetworkCommand;
+import control.UserManager;
+import model.NetworkPackage;
 import model.TbUser;
 
 public class ServerHandleThread extends Thread
@@ -33,11 +36,16 @@ public class ServerHandleThread extends Thread
 
 			while (true)
 			{
-				TbUser user = (TbUser)(inputFromCLient.readObject());
-				UserManager um = new UserManager();
-				um.userRegister(user);
-				textArea.append(user.toString());
-				textArea.append("\n");
+				NetworkPackage cmd = (NetworkPackage) (inputFromCLient
+						.readObject());
+				if (cmd.getCommandName().equals("login"))
+				{
+					TbUser user = (TbUser) cmd.getParam();
+					//				UserManager um = new UserManager();
+					//				um.userRegister(user);
+					textArea.append(user.toString());
+					textArea.append("\n");
+				}
 			}
 		}
 		catch (Exception e)
