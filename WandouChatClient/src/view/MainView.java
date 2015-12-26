@@ -48,8 +48,6 @@ public class MainView extends JFrame
 	public MainView()
 	{
 		
-		new LoginDialog(this);
-
 		initNorth();
 		initCenter();
 

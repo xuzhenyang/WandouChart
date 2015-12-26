@@ -35,20 +35,20 @@ public class NetworkCommand
 		if (messageServer == null)
 		{
 			//			 这两个信息可写入相应的配置文件，然后从配置文件读取
-/*			for(int i = 5000; i < 5200; i++)
-			{
-				if(!NetUtil.isLoclePortUsing(i))
-				{
-//					System.out.println("" + i + NetUtil.isLoclePortUsing(i));
-					messageServer = new NetworkCommand("127.0.0.1", i);
-					break;
-				}
-			}*/
-			messageServer = new NetworkCommand("127.0.0.1", 5000);
+			/*			for(int i = 5000; i < 5200; i++)
+						{
+							if(!NetUtil.isLoclePortUsing(i))
+							{
+			//					System.out.println("" + i + NetUtil.isLoclePortUsing(i));
+								messageServer = new NetworkCommand("127.0.0.1", i);
+								break;
+							}
+						}*/
+			messageServer = new NetworkCommand("127.0.0.1", 4331);
 		}
 		return messageServer;
 	}
-	
+
 	public String showState()
 	{
 		return "ip : " + serverip + " port : " + serverport;
@@ -99,22 +99,22 @@ public class NetworkCommand
 			out = new ObjectOutputStream(sock.getOutputStream());
 			out.writeObject(cmd);//发送命令对象			
 			in = new ObjectInputStream(sock.getInputStream());
-			/*
-			 * 暂时先不考虑处理返回对象
-			 *  * 
-			 * 			Object result = (Object) in.readObject();//获得返回对象
-						//服务器处理结束后可能传回结果信息或异常信息
-						//对于BusinessException则直接抛出
-						//对于其他异常统一封装为RemoteException
-						if (result != null)
-						{
-							if (result instanceof BusinessException)
-								throw (BusinessException) result;
-							else if (result instanceof Exception)
-								throw new RemoteException("服务器错误");
-							else
-								return result;
-						}*/
+			System.out.println("发送命令成功");
+
+			Object result = (Object) in.readObject();//获得返回对象
+			System.out.println("读取命令成功");
+			//服务器处理结束后可能传回结果信息或异常信息
+			//对于BusinessException则直接抛出
+			//对于其他异常统一封装为RemoteException
+			if (result != null)
+			{
+				if (result instanceof BusinessException)
+					throw (BusinessException) result;
+				else if (result instanceof Exception)
+					throw new RemoteException("服务器错误");
+				else
+					return result;
+			}
 			return null;
 
 		}
@@ -122,11 +122,11 @@ public class NetworkCommand
 		{
 			throw new RemoteException("网络读写错误！");
 		}
-		/*		catch (ClassNotFoundException e)
-				{
-					// TODO 自动生成 catch 块
-					throw new RemoteException("服务器返回类型错误！");
-				}*/
+		catch (ClassNotFoundException e)
+		{
+			// TODO 自动生成 catch 块
+			throw new RemoteException("服务器返回类型错误！");
+		}
 		finally
 		{
 			this.disconnectFromServer();
@@ -154,7 +154,7 @@ public class NetworkCommand
 	public synchronized void login(TbUser user) throws RemoteException,
 			BusinessException
 	{
-		this.currentUser = (TbUser) this.docmd("login", user);
+		this.docmd("login", user);
 	}
 
 }

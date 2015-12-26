@@ -1,8 +1,8 @@
 package control;
 
-import dao.TbUserDAO;
 import model.NetworkPackage;
 import model.TbUser;
+import dao.TbUserDAO;
 import exception.BusinessException;
 import exception.DBOperatorException;
 import exception.SystemException;
@@ -29,9 +29,7 @@ public class ClientLoginHandler extends NetworkCommandHandler
 			throw new BusinessException("帐号不正确");
 		if (!user.getUserPwd().equals(result.getUserPwd()))
 			throw new BusinessException("密码错误");
-		
-		System.out.println("login successful");
-		
+
 		return result;
 	}
 

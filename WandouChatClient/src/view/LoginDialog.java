@@ -6,6 +6,8 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,9 +39,6 @@ public class LoginDialog extends JDialog implements ActionListener
 	private JLabel labelPwd = new JLabel("密码：");
 	private JTextField edtUserId = new JTextField(20);
 	private JPasswordField edtPwd = new JPasswordField(20);
-
-	private DataOutputStream toServer;
-	private DataInputStream fromServer;
 
 	public LoginDialog(Frame owner)
 	{
@@ -69,20 +69,15 @@ public class LoginDialog extends JDialog implements ActionListener
 		edtUserId.addActionListener(this);
 		edtPwd.addActionListener(this);
 
-		System.out.println("test");
-
-		try
+		//添加框架的关闭事件处理
+		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter()
 		{
-			System.out.println("start");
-			Socket socket = new Socket("127.0.0.1", 4331);
-			toServer = new DataOutputStream(socket.getOutputStream());
-			fromServer = new DataInputStream(socket.getInputStream());
-		}
-		catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+			public void windowClosing(WindowEvent e)
+			{
+				System.exit(0);
+			}
+		});
 
 		this.setVisible(true);
 	}
@@ -109,6 +104,7 @@ public class LoginDialog extends JDialog implements ActionListener
 			try
 			{
 				NetworkCommand.getServer().login(tbUser);
+				new MainView();
 				this.setVisible(false);
 			}
 			catch (RemoteException e1)
@@ -119,7 +115,8 @@ public class LoginDialog extends JDialog implements ActionListener
 			catch (BusinessException e1)
 			{
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				//				e1.printStackTrace();
+				System.out.println(e1.getMessage());
 			}
 
 		}

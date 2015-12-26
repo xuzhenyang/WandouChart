@@ -6,10 +6,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import network.NetUtil;
-import exception.BusinessException;
-import exception.RemoteException;
 import model.NetworkPackage;
 import model.TbUser;
+import exception.BusinessException;
+import exception.RemoteException;
 
 /*
  * NetworkCommand类
@@ -48,7 +48,7 @@ public class NetworkCommand
 					break;
 				}
 			}*/
-			messageServer = new NetworkCommand("127.0.0.1", 5000);
+			messageServer = new NetworkCommand("127.0.0.1", 4331);
 		}
 		return messageServer;
 	}

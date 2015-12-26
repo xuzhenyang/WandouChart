@@ -33,8 +33,8 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import control.NetworkCommand;
 import network.ServerListener;
+import control.NetworkCommand;
 
 public class ServerView extends JFrame
 {
