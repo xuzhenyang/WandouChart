@@ -307,8 +307,9 @@ public class MainView extends JFrame
 				if (SwingUtilities.isLeftMouseButton(me))
 					if (me.getClickCount() == 2) // 表示鼠标双击
 					{
-						new ChatView();
-						System.out.println("mouse 双击了");
+						UserNode userNode = (UserNode) selNode.getUserObject();
+//						System.out.println(userNode.getId());
+						new ChatView(userNode);
 					}
 				//                 leaf.show(jtree,me.getX(),me.getY());
 			}

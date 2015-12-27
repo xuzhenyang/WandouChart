@@ -15,8 +15,8 @@ import model.TbUser;
 public class NetworkCommand
 {
 	private static NetworkCommand messageServer = null;
-
-	private TbUser currentUser = null;
+	
+	public static TbUser currentUser = null;
 
 	private String serverip = null;
 
@@ -155,6 +155,7 @@ public class NetworkCommand
 	public synchronized Object login(TbUser user) throws RemoteException,
 			BusinessException
 	{
+		currentUser = user;
 		return this.docmd("login", user);
 	}
 

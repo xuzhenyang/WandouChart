@@ -13,6 +13,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -47,7 +49,7 @@ public class ChatView extends JFrame implements ActionListener
 
 	//	ClientListener clientListener;
 
-	public JComboBox combobox;//选择发送消息的接受者
+	public JLabel receiver;//选择发送消息的接受者
 	public JTextArea messageShow;//客户端的信息显示
 	JScrollPane messageScrollPane;//信息显示的滚动条
 
@@ -74,8 +76,30 @@ public class ChatView extends JFrame implements ActionListener
 	GridBagLayout girdBag;
 	GridBagConstraints girdBagCon;
 
+	UserNode userNode;
+
 	public ChatView()
 	{
+		init();//初始化程序
+
+		//添加框架的关闭事件处理
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.pack();
+		//设置框架的大小
+		this.setSize(faceSize);
+		this.setVisible(true);
+		//设置运行时窗口的位置
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((int) (screenSize.width - faceSize.getWidth()) / 2,
+				(int) (screenSize.height - faceSize.getHeight()) / 2);
+		this.setResizable(false);
+		//		this.setTitle(clientListener.userName); //设置标题
+	}
+
+	public ChatView(UserNode userNode)
+	{
+		this.userNode = userNode;
+
 		init();//初始化程序
 
 		//添加框架的关闭事件处理
@@ -97,8 +121,6 @@ public class ChatView extends JFrame implements ActionListener
 	 */
 	public void init()
 	{
-//		new LoginDialog(this);
-
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
@@ -109,9 +131,7 @@ public class ChatView extends JFrame implements ActionListener
 		jMenuBar.add(helpMenu);
 		setJMenuBar(jMenuBar);
 
-		combobox = new JComboBox();
-		combobox.insertItemAt("所有人", 0);
-		combobox.setSelectedIndex(0);
+		receiver = new JLabel(userNode.getNickname());
 
 		messageShow = new JTextArea();
 		messageShow.setEditable(false);
@@ -158,8 +178,8 @@ public class ChatView extends JFrame implements ActionListener
 		girdBagCon.gridx = 1;
 		girdBagCon.gridy = 2;
 		girdBagCon.anchor = GridBagConstraints.LINE_START;
-		girdBag.setConstraints(combobox, girdBagCon);
-		downPanel.add(combobox);
+		girdBag.setConstraints(receiver, girdBagCon);
+		downPanel.add(receiver);
 
 		girdBagCon = new GridBagConstraints();
 		girdBagCon.gridx = 3;
@@ -245,13 +265,22 @@ public class ChatView extends JFrame implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		// TODO Auto-generated method stub
-		if(e.getSource() == sendMessageButton)
+		if (e.getSource() == sendMessageButton)
 		{
 			TbMessage message = new TbMessage();
 			message.setMessage(sendMessage.getText());
-			message.setFromUserId(null);
-			message.setSendTime(null);
-			message.setToUserId(null);
+			message.setFromUserId(NetworkCommand.currentUser.getUserId());
+			message.setSendTime(new Timestamp(new Date().getTime()));
+			message.setToUserId(userNode.getId());
+//			message.setFromUserId(null);
+//			message.setSendTime(null);
+//			message.setToUserId(null);
+			messageShow.append(message.getSendTime() + " " + message.getFromUserId() + "\n");
+			messageShow.append(message.getMessage() + "\n");
+			sendMessage.setText("");
+			System.out.println("from : " + message.getFromUserId() + " to : "
+					+ message.getToUserId() + " message : "
+					+ message.getMessage() + " time : " + message.getSendTime());
 			try
 			{
 				NetworkCommand.getServer().sendMessage(message);
@@ -267,7 +296,7 @@ public class ChatView extends JFrame implements ActionListener
 				e1.printStackTrace();
 			}
 		}
-		
+
 	}
 
 }

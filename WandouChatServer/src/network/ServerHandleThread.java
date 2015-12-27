@@ -74,10 +74,13 @@ public class ServerHandleThread extends Thread
 				else if (cmd.getCommandName().equals("sendMessage"))
 				{
 					textArea.append("rhandle client send message\n");
-					TbMessage message = new TbMessage();
+					TbMessage message = (TbMessage) cmd.getParam();
 					textArea.append("Client " + inetAddress.getHostAddress()
-							+ " : " + socket.getPort() + " send message : "
-							+ message.getMessage() + "\n");
+							+ " : " + socket.getPort() + " fromId : "
+							+ message.getFromUserId() + " toId : "
+							+ message.getToUserId() + " send message : "
+							+ message.getMessage() + " sendTime : "
+							+ message.getSendTime() + "\n");
 					//如果接收消息成功 发送成功信息（暂时用String）
 					outputToCLient.writeObject("receive");
 				}
