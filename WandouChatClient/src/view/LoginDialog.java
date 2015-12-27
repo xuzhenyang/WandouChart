@@ -12,6 +12,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import network.ClientListener;
 import control.NetworkCommand;
 import exception.BusinessException;
 import exception.RemoteException;
@@ -39,6 +41,8 @@ public class LoginDialog extends JDialog implements ActionListener
 	private JLabel labelPwd = new JLabel("密码：");
 	private JTextField edtUserId = new JTextField(20);
 	private JPasswordField edtPwd = new JPasswordField(20);
+
+	private ClientListener clientListener;
 
 	public LoginDialog(Frame owner)
 	{
@@ -79,6 +83,8 @@ public class LoginDialog extends JDialog implements ActionListener
 			}
 		});
 
+		clientListener = new ClientListener();
+
 		this.setVisible(true);
 	}
 
@@ -100,12 +106,17 @@ public class LoginDialog extends JDialog implements ActionListener
 			TbUser tbUser = new TbUser();
 			tbUser.setUserId(this.edtUserId.getText());
 			tbUser.setUserPwd(this.edtPwd.getText());
+			tbUser.setIp(clientListener.getIp());
+			tbUser.setPort(clientListener.getPort());
 
 			try
 			{
-				NetworkCommand.getServer().login(tbUser);
-				new MainView();
+				List onlineUsers = (List) NetworkCommand.getServer().login(
+						tbUser);
+				new MainView(onlineUsers);
 				this.setVisible(false);
+				System.out.println("ip:" + tbUser.getIp() + " : "
+						+ tbUser.getPort());
 			}
 			catch (RemoteException e1)
 			{
@@ -117,6 +128,8 @@ public class LoginDialog extends JDialog implements ActionListener
 				// TODO Auto-generated catch block
 				//				e1.printStackTrace();
 				System.out.println(e1.getMessage());
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "ERROR",
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 		}

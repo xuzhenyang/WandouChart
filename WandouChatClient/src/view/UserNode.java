@@ -1,19 +1,27 @@
 package view;
 
-public class TreeNode
+import model.TbUser;
+
+public class UserNode
 {
 	String id;
 	String nickname;
 	String image;
-	
-	public TreeNode(String id, String nickname,String image)
+
+	public UserNode(TbUser user)
+	{
+		this.id = user.getUserId();
+		this.nickname = user.getUserName();
+	}
+
+	public UserNode(String id, String nickname, String image)
 	{
 		this.id = id;
 		this.nickname = nickname;
 		this.image = image;
 	}
-	
-	public TreeNode(String id, String nickname)
+
+	public UserNode(String id, String nickname)
 	{
 		this.id = id;
 		this.nickname = nickname;

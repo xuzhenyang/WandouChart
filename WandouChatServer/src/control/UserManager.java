@@ -1,5 +1,7 @@
 package control;
 
+import java.util.List;
+
 import model.TbUser;
 import dao.TbUserDAO;
 import exception.DBOperatorException;
@@ -17,6 +19,11 @@ public class UserManager
 	public void userRegister(TbUser user) throws DBOperatorException
 	{
 		userDao.userRegister(user);
+	}
+	
+	public List loadAllOnlieUser() throws DBOperatorException
+	{
+		return userDao.loadAllOnlineUsers();
 	}
 
 }

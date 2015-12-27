@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -24,6 +26,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+import model.TbUser;
 import control.NetworkCommand;
 
 /**
@@ -47,16 +50,15 @@ public class MainView extends JFrame
 
 	public MainView()
 	{
-		
+
 		initNorth();
-		initCenter();
+		//		initCenter();
 
 		//设置运行时窗口的位置
 		Dimension faceSize = new Dimension(260, 520);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation((int) (screenSize.width - faceSize.getWidth()) / 2,
 				(int) (screenSize.height - faceSize.getHeight()) / 2);
-		this.setResizable(false);
 
 		this.setLayout(null);
 		this.setSize(260, 520);
@@ -70,7 +72,35 @@ public class MainView extends JFrame
 			}
 		});
 		this.setIconImage((new ImageIcon("image/头像.gif").getImage()));
-		this.setTitle("QQ2012");
+		this.setTitle("WandouChat");
+		this.setVisible(true);
+	}
+
+	public MainView(List onlineUsers)
+	{
+
+		initNorth();
+		initCenter(onlineUsers);
+
+		//设置运行时窗口的位置
+		Dimension faceSize = new Dimension(260, 520);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((int) (screenSize.width - faceSize.getWidth()) / 2,
+				(int) (screenSize.height - faceSize.getHeight()) / 2);
+
+		this.setLayout(null);
+		this.setSize(260, 520);
+		this.setResizable(false);
+		// 添加窗口的关闭事件
+		this.addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent arg0)
+			{
+				System.exit(0);
+			}
+		});
+		this.setIconImage((new ImageIcon("image/头像.gif").getImage()));
+		this.setTitle("WandouChat");
 		this.setVisible(true);
 	}
 
@@ -95,10 +125,11 @@ public class MainView extends JFrame
 
 		// 昵称显示
 		myName = new JLabel();
-		myName.setText("飞翔的企鹅");
+		myName.setText("豌豆");
 		myName.setBounds(120, 40, 130, 20);
 		this.add(myName);
-		
+
+		//状态显示
 		clientState = new JLabel();
 		clientState.setText(NetworkCommand.getServer().showState());
 		clientState.setBounds(80, 70, 150, 20);
@@ -110,38 +141,93 @@ public class MainView extends JFrame
 		this.add(searchField);
 	}
 
+	/*
+		// 初始化中部(好友列表和群列表的显示)
+		public void initCenter()
+		{
+			// 初始化好友列表
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode(new UserNode(
+					"0", "好友列表"));
+			// 一级节点
+			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(new UserNode(
+					"1", "我的好友"));
+			DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(new UserNode(
+					"3", "黑名单"));
+
+			// 子节点
+			// 好友
+			DefaultMutableTreeNode node1_1 = new DefaultMutableTreeNode(
+					new UserNode("100", "张三", "image/1-1.gif"));
+			DefaultMutableTreeNode node1_2 = new DefaultMutableTreeNode(
+					new UserNode("400", "李四", "image/2-1.gif"));
+			DefaultMutableTreeNode node1_3 = new DefaultMutableTreeNode(
+					new UserNode("200", "王五", "image/3-1.gif"));
+			// 陌生人
+			DefaultMutableTreeNode node2_1 = new DefaultMutableTreeNode(
+					new UserNode("1300", "张三", "image/4-1.gif"));
+			DefaultMutableTreeNode node2_2 = new DefaultMutableTreeNode(
+					new UserNode("4050", "张三", "image/7-1.gif"));
+			// 黑名单
+			DefaultMutableTreeNode node3_1 = new DefaultMutableTreeNode(
+					new UserNode("1010", "张三", "image/2-1.gif"));
+			DefaultMutableTreeNode node3_2 = new DefaultMutableTreeNode(
+					new UserNode("4400", "张三", "image/5-1.gif"));
+			DefaultMutableTreeNode node3_3 = new DefaultMutableTreeNode(
+					new UserNode("20440", "张三", "image/8-1.gif"));
+
+			jtree = new JTree(root);
+			jtree.setCellRenderer(new MyCellRenderer());
+			//	jpt1_tree1.setRootVisible(false);
+			scrollPane = new JScrollPane(jtree);
+			// 设置单击展开树节点
+			jtree.setToggleClickCount(1);
+
+			//设置双击监听
+			jtree.addMouseListener(new FilePopupListener());
+
+			root.add(node1);
+			root.add(node3);
+
+			node1.add(node1_1);
+			node1.add(node1_2);
+			node1.add(node1_3);
+
+			node3.add(node3_1);
+			node3.add(node3_2);
+			node3.add(node3_3);
+
+			// 创建选项卡窗口
+			tabWindow = new JTabbedPane(JTabbedPane.TOP);
+			// 选项卡一:好友列表
+
+			tabLinkman = new JPanel(new BorderLayout());
+			tabLinkman.add(scrollPane, "Center");
+
+			//		jtp1_jpl2 = new JPanel();
+			//		jpt1_jpl3 = new JPanel();
+
+			tabWindow.add(tabLinkman, "联系人");
+			//		tavWindow.add(jtp1_jpl2, "群");
+			//		tavWindow.add(jpt1_jpl3, "最近联系人");
+
+			tabWindow.setBounds(10, 160, 235, 280);
+			this.add(tabWindow);
+
+		}
+		*/
+
 	// 初始化中部(好友列表和群列表的显示)
-	public void initCenter()
+	public void initCenter(List onlineUsers)
 	{
 		// 初始化好友列表
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNode(
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new UserNode(
 				"0", "好友列表"));
-		// 一级节点
-		DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(new TreeNode(
-				"1", "我的好友"));
-		DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(new TreeNode(
-				"3", "黑名单"));
-
-		// 子节点
-		// 好友
-		DefaultMutableTreeNode node1_1 = new DefaultMutableTreeNode(
-				new TreeNode("100", "张三", "image/1-1.gif"));
-		DefaultMutableTreeNode node1_2 = new DefaultMutableTreeNode(
-				new TreeNode("400", "李四", "image/2-1.gif"));
-		DefaultMutableTreeNode node1_3 = new DefaultMutableTreeNode(
-				new TreeNode("200", "王五", "image/3-1.gif"));
-		// 陌生人
-		DefaultMutableTreeNode node2_1 = new DefaultMutableTreeNode(
-				new TreeNode("1300", "张三", "image/4-1.gif"));
-		DefaultMutableTreeNode node2_2 = new DefaultMutableTreeNode(
-				new TreeNode("4050", "张三", "image/7-1.gif"));
-		// 黑名单
-		DefaultMutableTreeNode node3_1 = new DefaultMutableTreeNode(
-				new TreeNode("1010", "张三", "image/2-1.gif"));
-		DefaultMutableTreeNode node3_2 = new DefaultMutableTreeNode(
-				new TreeNode("4400", "张三", "image/5-1.gif"));
-		DefaultMutableTreeNode node3_3 = new DefaultMutableTreeNode(
-				new TreeNode("20440", "张三", "image/8-1.gif"));
+		for (int i = 0; i < onlineUsers.size(); i++)
+		{
+			DefaultMutableTreeNode node = new DefaultMutableTreeNode(
+					new UserNode((TbUser) onlineUsers.get(i)));
+			root.add(node);
+		}
 
 		jtree = new JTree(root);
 		jtree.setCellRenderer(new MyCellRenderer());
@@ -153,17 +239,6 @@ public class MainView extends JFrame
 		//设置双击监听
 		jtree.addMouseListener(new FilePopupListener());
 
-		root.add(node1);
-		root.add(node3);
-
-		node1.add(node1_1);
-		node1.add(node1_2);
-		node1.add(node1_3);
-
-		node3.add(node3_1);
-		node3.add(node3_2);
-		node3.add(node3_3);
-
 		// 创建选项卡窗口
 		tabWindow = new JTabbedPane(JTabbedPane.TOP);
 		// 选项卡一:好友列表
@@ -171,12 +246,9 @@ public class MainView extends JFrame
 		tabLinkman = new JPanel(new BorderLayout());
 		tabLinkman.add(scrollPane, "Center");
 
-//		jtp1_jpl2 = new JPanel();
-//		jpt1_jpl3 = new JPanel();
-
 		tabWindow.add(tabLinkman, "联系人");
-//		tavWindow.add(jtp1_jpl2, "群");
-//		tavWindow.add(jpt1_jpl3, "最近联系人");
+		//		tavWindow.add(jtp1_jpl2, "群");
+		//		tavWindow.add(jpt1_jpl3, "最近联系人");
 
 		tabWindow.setBounds(10, 160, 235, 280);
 		this.add(tabWindow);
@@ -196,10 +268,10 @@ public class MainView extends JFrame
 
 			// 获得节点对象
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-			TreeNode treeNode = (TreeNode) node.getUserObject();
-			String id = treeNode.getId();
-			String nickname = treeNode.getNickname();
-			String image = treeNode.getImage();
+			UserNode userNode = (UserNode) node.getUserObject();
+			String id = userNode.getId();
+			String nickname = userNode.getNickname();
+			String image = userNode.getImage();
 
 			// 设置节点显示内容
 			this.setText(nickname);

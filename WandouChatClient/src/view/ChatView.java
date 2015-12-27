@@ -7,6 +7,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -28,6 +30,11 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import control.NetworkCommand;
+import exception.BusinessException;
+import exception.RemoteException;
+import model.TbMessage;
+
 //import listener.ClientListener;
 
 /**
@@ -35,7 +42,7 @@ import javax.swing.KeyStroke;
  * 客户端主窗口
  */
 
-public class ChatView extends JFrame
+public class ChatView extends JFrame implements ActionListener
 {
 
 	//	ClientListener clientListener;
@@ -46,8 +53,8 @@ public class ChatView extends JFrame
 
 	JLabel express, sendToLabel, messageLabel;
 
-	public JTextField clientMessage;//客户端消息的发送
-	public JButton clientMessageButton;//发送消息
+	public JTextField sendMessage;//客户端消息的发送
+	public JButton sendMessageButton;//发送消息
 	public JTextField showStatus;//显示用户连接状态
 
 	//建立菜单栏
@@ -115,10 +122,11 @@ public class ChatView extends JFrame
 		messageScrollPane.setPreferredSize(new Dimension(400, 400));
 		messageScrollPane.revalidate();
 
-		clientMessage = new JTextField(23);
+		sendMessage = new JTextField(23);
 		//		clientMessage.setEnabled(false);
-		clientMessageButton = new JButton();
-		clientMessageButton.setText("发送");
+		sendMessageButton = new JButton();
+		sendMessageButton.setText("发送");
+		sendMessageButton.addActionListener(this);
 
 		sendToLabel = new JLabel("发送至:");
 		messageLabel = new JLabel("发送消息:");
@@ -179,14 +187,14 @@ public class ChatView extends JFrame
 		girdBagCon.gridy = 3;
 		girdBagCon.gridwidth = 3;
 		girdBagCon.gridheight = 1;
-		girdBag.setConstraints(clientMessage, girdBagCon);
-		downPanel.add(clientMessage);
+		girdBag.setConstraints(sendMessage, girdBagCon);
+		downPanel.add(sendMessage);
 
 		girdBagCon = new GridBagConstraints();
 		girdBagCon.gridx = 4;
 		girdBagCon.gridy = 3;
-		girdBag.setConstraints(clientMessageButton, girdBagCon);
-		downPanel.add(clientMessageButton);
+		girdBag.setConstraints(sendMessageButton, girdBagCon);
+		downPanel.add(sendMessageButton);
 
 		showStatus = new JTextField(35);
 		showStatus.setEditable(false);
@@ -231,6 +239,35 @@ public class ChatView extends JFrame
 	{
 		// TODO Auto-generated method stub
 		ChatView chatView = new ChatView();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		// TODO Auto-generated method stub
+		if(e.getSource() == sendMessageButton)
+		{
+			TbMessage message = new TbMessage();
+			message.setMessage(sendMessage.getText());
+			message.setFromUserId(null);
+			message.setSendTime(null);
+			message.setToUserId(null);
+			try
+			{
+				NetworkCommand.getServer().sendMessage(message);
+			}
+			catch (RemoteException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (BusinessException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
 	}
 
 }

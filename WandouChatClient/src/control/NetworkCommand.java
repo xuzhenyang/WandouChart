@@ -9,6 +9,7 @@ import network.NetUtil;
 import exception.BusinessException;
 import exception.RemoteException;
 import model.NetworkPackage;
+import model.TbMessage;
 import model.TbUser;
 
 public class NetworkCommand
@@ -148,13 +149,19 @@ public class NetworkCommand
 	public synchronized void register(TbUser user) throws RemoteException,
 			BusinessException
 	{
-		this.currentUser = (TbUser) this.docmd("register", user);
+		this.docmd("register", user);
 	}
 
-	public synchronized void login(TbUser user) throws RemoteException,
+	public synchronized Object login(TbUser user) throws RemoteException,
 			BusinessException
 	{
-		this.docmd("login", user);
+		return this.docmd("login", user);
+	}
+
+	public synchronized void sendMessage(TbMessage message)
+			throws RemoteException, BusinessException
+	{
+		this.docmd("sendMessage", message);
 	}
 
 }

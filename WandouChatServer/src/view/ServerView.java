@@ -39,7 +39,7 @@ import control.NetworkCommand;
 public class ServerView extends JFrame
 {
 
-	ServerListener sendInfo;
+	ServerListener serverListener;
 
 	public JComboBox combobox;//选择发送消息的接受者,列表显示
 	public JTextArea messageShow;//服务端的信息显示
@@ -196,7 +196,7 @@ public class ServerView extends JFrame
 		contentPane.add(messageScrollPane, BorderLayout.CENTER);
 		contentPane.add(downPanel, BorderLayout.SOUTH);
 
-		sendInfo = new ServerListener(this);
+		serverListener = new ServerListener(this);
 
 		//关闭程序时的操作
 		this.addWindowListener(new WindowAdapter()

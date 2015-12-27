@@ -4,13 +4,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.JTextArea;
 
 import model.*;
 import control.ClientLoginHandler;
+import control.UserManager;
 import exception.BusinessException;
 
 public class ServerHandleThread extends Thread
@@ -26,38 +29,57 @@ public class ServerHandleThread extends Thread
 
 	public void run()
 	{
-		textArea.append("ServerHandleThread start\n");
+		//		textArea.append("ServerHandleThread start\n");
 		try
 		{
-			textArea.append("init input/output\n");
+			//			textArea.append("init input/output\n");
 			ObjectInputStream inputFromCLient = null;
 			ObjectOutputStream outputToCLient = null;
 			try
 			{
-				textArea.append("get input/output\n");
+				//				textArea.append("get input/output\n");
 				inputFromCLient = new ObjectInputStream(socket.getInputStream());
 				outputToCLient = new ObjectOutputStream(
 						socket.getOutputStream());
 
 				//从客户端读取网络请求信息
-				/*NetworkPackage cmd = (NetworkPackage) (inputFromCLient
-						.readObject());*/
-				NetworkPackage cmd = (NetworkPackage) (inputFromCLient.readObject());
-				textArea.append("cmd : " + cmd.getCommandName() + "\n");
+				NetworkPackage cmd = (NetworkPackage) (inputFromCLient
+						.readObject());
+				InetAddress inetAddress = socket.getInetAddress();
+				textArea.append("inetAddress: " + inetAddress.getHostAddress()
+						+ " : " + socket.getPort() + " cmd : "
+						+ cmd.getCommandName() + "\n");
 				if (cmd.getCommandName().equals("login"))
 				{
 					textArea.append("handle client login\n");
-					(new ClientLoginHandler()).handleCommand(cmd);
-					textArea.append("login successful\n");
+					(new ClientLoginHandler()).handleCommand(cmd, textArea);
+					UserManager um = new UserManager();
+					List onlineUsers = um.loadAllOnlieUser();
+					outputToCLient.writeObject(onlineUsers);
+					//					//如果登陆成功 发送成功信息（暂时用String）
+					//					outputToCLient.writeObject("login success");
 				}
 				else if (cmd.getCommandName().equals("register"))
 				{
 					TbUser user = (TbUser) cmd.getParam();
-					//					UserManager um = new UserManager();
-					//				um.userRegister(user);
+					UserManager um = new UserManager();
+					um.userRegister(user);
 					textArea.append("register : \n");
 					textArea.append(user.toString());
 					textArea.append("\n");
+
+					//如果注册成功 发送成功信息（暂时用String）
+					outputToCLient.writeObject("register success");
+				}
+				else if (cmd.getCommandName().equals("sendMessage"))
+				{
+					textArea.append("rhandle client send message\n");
+					TbMessage message = new TbMessage();
+					textArea.append("Client " + inetAddress.getHostAddress()
+							+ " : " + socket.getPort() + " send message : "
+							+ message.getMessage() + "\n");
+					//如果接收消息成功 发送成功信息（暂时用String）
+					outputToCLient.writeObject("receive");
 				}
 
 			}
@@ -69,8 +91,6 @@ public class ServerHandleThread extends Thread
 				textArea.append("exception : " + e + "\n");
 				outputToCLient.writeObject(e);
 			}
-			//如果登陆成功 发送成功信息（暂时用String）
-			outputToCLient.writeObject("login success");
 			outputToCLient.close();
 		}
 		catch (Exception e)

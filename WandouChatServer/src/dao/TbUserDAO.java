@@ -2,6 +2,9 @@ package dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import model.TbUser;
 import dbutil.JDBCBase;
@@ -48,6 +51,11 @@ public class TbUserDAO extends JDBCBase
 				user.setUserId(rs.getString("userId"));
 				user.setUserPwd(rs.getString("userPwd"));
 				user.setUserName(rs.getString("userName"));
+				user.setIp(rs.getString("ip"));
+				user.setPort(rs.getString("port"));
+				user.setRecentLoginDate(rs.getDate("recentLoginDate"));
+				user.setRecentLogoutDate(rs.getDate("recentLogoutDate"));
+				user.setState(rs.getString("state"));
 			}
 
 		}
@@ -57,6 +65,54 @@ public class TbUserDAO extends JDBCBase
 			throw new DBOperatorException("数据库数据读取失败");
 		}
 		return user;
+	}
+
+	private List loadUsersBySql(String sql) throws DBOperatorException
+	{
+		ResultSet rs = this.query(sql);
+
+		List result = new ArrayList();
+		try
+		{
+			while (rs.next())
+			{
+				TbUser user = new TbUser();
+				user.setUserId(rs.getString("userId"));
+				user.setUserPwd(rs.getString("userPwd"));
+				user.setUserName(rs.getString("userName"));
+				user.setIp(rs.getString("ip"));
+				user.setPort(rs.getString("port"));
+				user.setRecentLoginDate(rs.getDate("recentLoginDate"));
+				user.setRecentLogoutDate(rs.getDate("recentLogoutDate"));
+				user.setState(rs.getString("state"));
+				result.add(user);
+			}
+		}
+		catch (SQLException e)
+		{
+			// TODO 自动生成 catch 块
+			e.printStackTrace();
+			throw new DBOperatorException("数据库数据读取失败，可能是字段名错误");
+		}
+		return result;
+	}
+
+	public List loadAllOnlineUsers() throws DBOperatorException
+	{
+		String sql = "select * from tbuser where state = 'online'";
+		return this.loadUsersBySql(sql);
+	}
+
+	public void modifyUser(TbUser user) throws DBOperatorException
+	{
+		String sql = "update tbuser set userName='" + user.getUserName() + "'"
+				+ ",userPwd='" + user.getUserPwd() + "'" + ",recentLoginDate='"
+				+ user.getRecentLoginDate() + "'" + ",recentLogoutDate='"
+				+ user.getRecentLogoutDate() + "'" + ",ip='" + user.getIp()
+				+ "'" + ",port='" + user.getPort() + "'" + ",state='"
+				+ user.getState() + "'" + " where userid='" + user.getUserId()
+				+ "'";
+		this.execute(sql);
 	}
 
 }
