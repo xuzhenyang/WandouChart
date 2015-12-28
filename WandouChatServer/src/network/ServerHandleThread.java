@@ -14,6 +14,8 @@ import javax.swing.JTextArea;
 import model.*;
 import control.ClientLoginHandler;
 import control.UserManager;
+import control.NetworkCommand;
+import dao.TbUserDAO;
 import exception.BusinessException;
 
 public class ServerHandleThread extends Thread
@@ -75,14 +77,37 @@ public class ServerHandleThread extends Thread
 				{
 					textArea.append("rhandle client send message\n");
 					TbMessage message = (TbMessage) cmd.getParam();
-					textArea.append("Client " + inetAddress.getHostAddress()
-							+ " : " + socket.getPort() + " fromId : "
+					textArea.append("FromClient "
+							+ inetAddress.getHostAddress() + " : "
+							+ socket.getPort() + " fromId : "
 							+ message.getFromUserId() + " toId : "
 							+ message.getToUserId() + " send message : "
 							+ message.getMessage() + " sendTime : "
 							+ message.getSendTime() + "\n");
 					//如果接收消息成功 发送成功信息（暂时用String）
 					outputToCLient.writeObject("receive");
+
+					//向接收客户端转发消息
+					System.out.println("test1");
+					TbUser toUser = (new TbUserDAO()).loadUserById(message
+							.getToUserId());
+					System.out.println("test2");
+					System.out.println("ToClient " + toUser.getIp() + " : "
+							+ toUser.getPort() + " fromId : "
+							+ message.getFromUserId() + " toId : "
+							+ message.getToUserId() + " send message : "
+							+ message.getMessage() + " sendTime : "
+							+ message.getSendTime() + "\n");
+					(new NetworkCommand(toUser.getIp(), Integer.valueOf(toUser
+							.getPort()))).sendMessage(message);
+					System.out.println("test3");
+					textArea.append("ToClient " + toUser.getIp() + " : "
+							+ toUser.getPort() + " fromId : "
+							+ message.getFromUserId() + " toId : "
+							+ message.getToUserId() + " send message : "
+							+ message.getMessage() + " sendTime : "
+							+ message.getSendTime() + "\n");
+
 				}
 
 			}

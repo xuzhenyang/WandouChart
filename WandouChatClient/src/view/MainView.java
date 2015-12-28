@@ -308,7 +308,7 @@ public class MainView extends JFrame
 					if (me.getClickCount() == 2) // 表示鼠标双击
 					{
 						UserNode userNode = (UserNode) selNode.getUserObject();
-//						System.out.println(userNode.getId());
+						//						System.out.println(userNode.getId());
 						new ChatView(userNode);
 					}
 				//                 leaf.show(jtree,me.getX(),me.getY());

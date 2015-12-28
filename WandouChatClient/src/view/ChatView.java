@@ -50,7 +50,7 @@ public class ChatView extends JFrame implements ActionListener
 	//	ClientListener clientListener;
 
 	public JLabel receiver;//选择发送消息的接受者
-	public JTextArea messageShow;//客户端的信息显示
+	public static JTextArea messageShow;//客户端的信息显示
 	JScrollPane messageScrollPane;//信息显示的滚动条
 
 	JLabel express, sendToLabel, messageLabel;
@@ -243,6 +243,13 @@ public class ChatView extends JFrame implements ActionListener
 		});
 	}
 
+	public static void appendMessage(TbMessage message)
+	{
+		messageShow.append(message.getSendTime() + " "
+				+ message.getFromUserId() + "\n");
+		messageShow.append(message.getMessage() + "\n");
+	}
+
 	public int showConfirmDialog(String title, String msg)
 	{
 		int j = JOptionPane.showConfirmDialog(this, title, msg,
@@ -272,15 +279,18 @@ public class ChatView extends JFrame implements ActionListener
 			message.setFromUserId(NetworkCommand.currentUser.getUserId());
 			message.setSendTime(new Timestamp(new Date().getTime()));
 			message.setToUserId(userNode.getId());
-//			message.setFromUserId(null);
-//			message.setSendTime(null);
-//			message.setToUserId(null);
-			messageShow.append(message.getSendTime() + " " + message.getFromUserId() + "\n");
+			//			message.setFromUserId(null);
+			//			message.setSendTime(null);
+			//			message.setToUserId(null);
+			messageShow.append(message.getSendTime() + " "
+					+ message.getFromUserId() + "\n");
 			messageShow.append(message.getMessage() + "\n");
 			sendMessage.setText("");
-			System.out.println("from : " + message.getFromUserId() + " to : "
-					+ message.getToUserId() + " message : "
-					+ message.getMessage() + " time : " + message.getSendTime());
+			System.out
+					.println("from : " + message.getFromUserId() + " to : "
+							+ message.getToUserId() + " message : "
+							+ message.getMessage() + " time : "
+							+ message.getSendTime());
 			try
 			{
 				NetworkCommand.getServer().sendMessage(message);

@@ -2,6 +2,7 @@ package network;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -34,7 +35,9 @@ public class ClientListenThread extends Thread
 		{
 			try
 			{
+				System.out.println("waiting...\n");
 				Socket socket = server.accept();
+				System.out.println("connect\n");
 				(new ClientHandleThread(socket)).start();
 			}
 			catch (Exception e)

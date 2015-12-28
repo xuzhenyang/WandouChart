@@ -113,8 +113,8 @@ public class LoginDialog extends JDialog implements ActionListener
 			{
 				List onlineUsers = (List) NetworkCommand.getServer().login(
 						tbUser);
-				new MainView(onlineUsers);
 				this.setVisible(false);
+				new MainView(onlineUsers);
 				System.out.println("ip:" + tbUser.getIp() + " : "
 						+ tbUser.getPort());
 			}

@@ -14,10 +14,7 @@ import java.net.*;
 public class ServerListenThread extends Thread
 {
 	ServerSocket server;
-
-	JComboBox combobox;
 	JTextArea textArea;
-	JTextField textfield;
 
 	public boolean isStop;
 

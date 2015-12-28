@@ -8,6 +8,7 @@ import java.util.List;
 
 import network.NetUtil;
 import model.NetworkPackage;
+import model.TbMessage;
 import model.TbUser;
 import exception.BusinessException;
 import exception.RemoteException;
@@ -28,7 +29,7 @@ public class NetworkCommand
 
 	private Socket sock = null;
 
-	private NetworkCommand(String ip, int port)
+	public NetworkCommand(String ip, int port)
 	{
 		serverip = ip;
 		serverport = port;
@@ -102,9 +103,12 @@ public class NetworkCommand
 		try
 		{
 			out = new ObjectOutputStream(sock.getOutputStream());
-			out.writeObject(cmd);//发送命令对象			
+			out.writeObject(cmd);//发送命令对象
+			System.out.println("send cmd : " + commandName + " to " + serverip
+					+ ":" + serverport + "\n");
 			in = new ObjectInputStream(sock.getInputStream());
 			Object result = (Object) in.readObject();//获得返回对象
+			System.out.println("get result\n");
 			//服务器处理结束后可能传回结果信息或异常信息
 			//对于BusinessException则直接抛出
 			//对于其他异常统一封装为RemoteException
@@ -160,10 +164,16 @@ public class NetworkCommand
 		this.currentUser = (TbUser) this.docmd("checkRegister", user);
 	}
 
-	public synchronized void returnAllOnlineUser(List onlineUsers) throws RemoteException,
-			BusinessException
+	public synchronized void returnAllOnlineUser(List onlineUsers)
+			throws RemoteException, BusinessException
 	{
 		this.docmd("checkRegister", onlineUsers);
+	}
+
+	public synchronized void sendMessage(TbMessage message)
+			throws RemoteException, BusinessException
+	{
+		this.docmd("sendMessage", message);
 	}
 
 }
