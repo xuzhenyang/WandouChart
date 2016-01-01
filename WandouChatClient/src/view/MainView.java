@@ -292,7 +292,7 @@ public class MainView extends JFrame
 		}
 	}
 
-	private class FilePopupListener extends MouseAdapter
+	class FilePopupListener extends MouseAdapter
 	{
 		public void mousePressed(MouseEvent me)
 		{
@@ -309,7 +309,7 @@ public class MainView extends JFrame
 					{
 						UserNode userNode = (UserNode) selNode.getUserObject();
 						//						System.out.println(userNode.getId());
-						new ChatView(userNode);
+						new ChatView((JPanel) getContentPane(), userNode);
 					}
 				//                 leaf.show(jtree,me.getX(),me.getY());
 			}

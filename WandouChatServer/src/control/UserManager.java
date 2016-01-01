@@ -20,7 +20,7 @@ public class UserManager
 	{
 		userDao.userRegister(user);
 	}
-	
+
 	public List loadAllOnlieUser() throws DBOperatorException
 	{
 		return userDao.loadAllOnlineUsers();

@@ -116,6 +116,22 @@ public class ChatView extends JFrame implements ActionListener
 		//		this.setTitle(clientListener.userName); //设置标题
 	}
 
+	public ChatView(JPanel owner, UserNode userNode)
+	{
+		this.userNode = userNode;
+
+		init();//初始化程序
+
+		//添加框架的关闭事件处理
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.pack();
+		//设置框架的大小
+		this.setSize(faceSize);
+		this.setVisible(true);
+		//设置运行时窗口的位置
+		this.setLocationRelativeTo(owner);
+	}
+
 	/**
 	 * 程序初始化函数
 	 */
@@ -142,7 +158,7 @@ public class ChatView extends JFrame implements ActionListener
 		messageScrollPane.setPreferredSize(new Dimension(400, 400));
 		messageScrollPane.revalidate();
 
-		sendMessage = new JTextField(23);
+		sendMessage = new JTextField(20);
 		//		clientMessage.setEnabled(false);
 		sendMessageButton = new JButton();
 		sendMessageButton.setText("发送");
@@ -216,7 +232,7 @@ public class ChatView extends JFrame implements ActionListener
 		girdBag.setConstraints(sendMessageButton, girdBagCon);
 		downPanel.add(sendMessageButton);
 
-		showStatus = new JTextField(35);
+		showStatus = new JTextField(30);
 		showStatus.setEditable(false);
 		girdBagCon = new GridBagConstraints();
 		girdBagCon.gridx = 0;
@@ -235,10 +251,7 @@ public class ChatView extends JFrame implements ActionListener
 		{
 			public void windowClosing(WindowEvent e)
 			{
-				//					if(clientListener.type == 1){
-				//						clientListener.DisConnect();
-				//					}
-				System.exit(0);
+				setVisible(false);
 			}
 		});
 	}

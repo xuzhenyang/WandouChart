@@ -15,7 +15,7 @@ import model.TbUser;
 public class NetworkCommand
 {
 	private static NetworkCommand messageServer = null;
-	
+
 	public static TbUser currentUser = null;
 
 	private String serverip = null;
