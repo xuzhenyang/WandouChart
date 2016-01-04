@@ -26,4 +26,10 @@ public class UserManager
 		return userDao.loadAllOnlineUsers();
 	}
 
+	public void userLogout(TbUser user) throws DBOperatorException
+	{
+		user.setState("offline");
+		userDao.modifyUser(user);
+	}
+
 }

@@ -54,12 +54,24 @@ public class ServerHandleThread extends Thread
 				if (cmd.getCommandName().equals("login"))
 				{
 					textArea.append("handle client login\n");
-					(new ClientLoginHandler()).handleCommand(cmd, textArea);
+					TbUser user = (TbUser)(new ClientLoginHandler()).handleCommand(cmd, textArea);
 					UserManager um = new UserManager();
 					List onlineUsers = um.loadAllOnlieUser();
-					outputToCLient.writeObject(onlineUsers);
+					Object param[] = new Object[2];
+					param[0] = user;
+					param[1] = onlineUsers;
+					outputToCLient.writeObject(param);
 					//					//如果登陆成功 发送成功信息（暂时用String）
 					//					outputToCLient.writeObject("login success");
+				}
+				else if (cmd.getCommandName().equals("logout"))
+				{
+					TbUser user = (TbUser) cmd.getParam();
+					UserManager um = new UserManager();
+					um.userLogout(user);
+					textArea.append("user : " + user.getUserId() + " logout\n");
+					//如果登出成功 发送成功信息（暂时用String）
+					outputToCLient.writeObject("logout success");
 				}
 				else if (cmd.getCommandName().equals("register"))
 				{

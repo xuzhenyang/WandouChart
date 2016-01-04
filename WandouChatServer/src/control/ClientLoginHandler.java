@@ -74,6 +74,7 @@ public class ClientLoginHandler extends NetworkCommandHandler
 		textArea.append("Client " + user.getIp() + " : " + user.getPort()
 				+ " login success\n");
 
-		return result;
+		//return result;
+		return user;
 	}
 }

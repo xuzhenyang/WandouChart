@@ -28,6 +28,8 @@ import javax.swing.tree.TreePath;
 
 import model.TbUser;
 import control.NetworkCommand;
+import exception.BusinessException;
+import exception.RemoteException;
 
 /**
  * 主界面
@@ -76,8 +78,11 @@ public class MainView extends JFrame
 		this.setVisible(true);
 	}
 
-	public MainView(List onlineUsers)
+	public MainView(TbUser user, List onlineUsers)
 	{
+
+		//me用于登出时发送给Server
+		final TbUser me = user;
 
 		initNorth();
 		initCenter(onlineUsers);
@@ -96,6 +101,21 @@ public class MainView extends JFrame
 		{
 			public void windowClosing(WindowEvent arg0)
 			{
+				try
+				{
+					//登出
+					NetworkCommand.getServer().logout(me);
+				}
+				catch (RemoteException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (BusinessException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.exit(0);
 			}
 		});

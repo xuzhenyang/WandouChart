@@ -152,11 +152,17 @@ public class NetworkCommand
 		this.docmd("register", user);
 	}
 
-	public synchronized Object login(TbUser user) throws RemoteException,
+	public synchronized Object[] login(TbUser user) throws RemoteException,
 			BusinessException
 	{
-		currentUser = user;
-		return this.docmd("login", user);
+		Object[] param = (Object[]) this.docmd("login", user);
+		return param;
+	}
+
+	public synchronized void logout(TbUser user) throws RemoteException,
+			BusinessException
+	{
+		this.docmd("logout", user);
 	}
 
 	public synchronized void sendMessage(TbMessage message)
